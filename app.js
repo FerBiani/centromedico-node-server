@@ -1,7 +1,10 @@
 const express = require("express");
 const socketio = require("socket.io");
 const http = require("http");
+const cors = require("cors")
 const app = express();
+
+app.use(cors())
 
 server = http.createServer(app);
 const io = socketio(server);
@@ -43,6 +46,23 @@ app.post("/check-in", function(req, res) {
 
 });
 
+app.post("/chamado", function(req, res) {
+
+    let client = clients.find(client => client.id == "painel")
+
+    if(client) {
+        io.sockets.connected[client.socket].emit('chamado', {
+            id: req.body.id,
+            nome: req.body.nome_paciente,
+            especialidade: req.body.especialidade,
+            horario: req.body.horario
+        })
+    }
+
+    res.send()
+
+})
+
 // Recebe conexão dos usuários no servidor
 io.on("connection", function(client) {
 
@@ -55,6 +75,6 @@ io.on("connection", function(client) {
         socket: client.id
     })
 
-    console.log('cliente conectado!')
+    console.log('clientes conectados:'+JSON.stringify(clients))
 
 })
