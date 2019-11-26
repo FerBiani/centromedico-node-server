@@ -36,10 +36,12 @@ app.post("/check-in", function(req, res) {
 
     var params = req.body;
 
+    io.sockets.emit('check_in', params)
+
     let client = clients.find(client => client.id = params.medico_id)
 
     if(client) {
-        io.sockets.connected[client.socket].emit('check_in', params)
+        io.sockets.connected[client.socket].emit('check_in_notificacao', params)
     }
 
     res.send()
